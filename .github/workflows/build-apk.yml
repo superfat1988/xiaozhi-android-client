@@ -17,8 +17,10 @@ jobs:
           distribution: temurin
           java-version: '17'
 
+      # 锁 3.29.x：上游 gradle-wrapper 是 8.10.2，新版 Flutter 要求 ≥8.14
       - uses: subosito/flutter-action@v2
         with:
+          flutter-version: 3.29.3
           channel: stable
           cache: true
 
