@@ -234,6 +234,11 @@ class AudioUtil {
             encoder: AudioEncoder.pcm16bits,
             sampleRate: SAMPLE_RATE,
             numChannels: CHANNELS,
+            // LX04 定制固件上，默认 MIC 音源被系统常听独占，只会拿到静音填充。
+            // 只有 VOICE_COMMUNICATION 走另一条 HAL 输入路径能真正取到麦克风。
+            androidConfig: AndroidRecordConfig(
+              audioSource: AndroidAudioSource.voiceCommunication,
+            ),
           ),
         );
 
