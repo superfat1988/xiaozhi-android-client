@@ -30,6 +30,22 @@ jobs:
       - name: pub get
         run: flutter pub get
 
+      # AGP 8 要求每个 library module 显式声明 namespace，
+      # 上游依赖 (flutter_pcm_player 等) 还是 AGP 7 写法，就地补上。
+      - name: Patch plugin namespaces
+        run: |
+          set -e
+          for d in "$PUB_CACHE"/hosted/pub.dev/*/android; do
+            [ -f "$d/build.gradle" ] || continue
+            grep -q "namespace" "$d/build.gradle" && continue
+            mf="$d/src/main/AndroidManifest.xml"
+            [ -f "$mf" ] || continue
+            ns=$(grep -oP 'package="\K[^"]+' "$mf" | head -1)
+            [ -n "$ns" ] || continue
+            perl -0pi -e "s/(android\s*\{)/\$1\n    namespace '$ns'/" "$d/build.gradle"
+            echo "patched $(basename $(dirname $d)) -> $ns"
+          done
+
       - name: Accept Android licenses
         run: yes | flutter doctor --android-licenses || true
 
