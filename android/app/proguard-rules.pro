@@ -24,3 +24,7 @@
     public static int d(...);
     public static int i(...);
 } 
+# Flutter 的 Play Core 延迟组件在无 Play 服务的设备上不参与，但 R8 会因缺类报错
+-dontwarn com.google.android.play.core.**
+-keep class com.google.android.play.core.** { *; }
+-keep class io.flutter.embedding.engine.deferredcomponents.** { *; }
